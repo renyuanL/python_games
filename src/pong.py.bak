@@ -61,7 +61,7 @@ class Paddle(object):
     
     def key_press(self, key, state):
         '''Changes the control state for a key'''
-        if key in self.key_controls:
+        if self.key_controls.has_key(key):
             self.control_states[self.key_controls[key]] = state
     
     def set_human(self,human):

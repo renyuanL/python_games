@@ -1,4 +1,4 @@
-'''
+﻿'''
 The classic arcade game pong.
 
 Created on Jun 8, 2014
@@ -6,7 +6,8 @@ Created on Jun 8, 2014
 @author: Robb
 '''
 
-import simplegui
+import simplegui_tc as simplegui
+
 import random
 import math
 
@@ -330,43 +331,43 @@ def mute():
     mute_off = not mute_off
 
 def setup():
-    '''Setup the frame and buttons'''
-    global frame, plyr1_button, plyr2_button, difficulty_button
+    '''Setup the 框 and buttons'''
+    global 框, plyr1_button, plyr2_button, difficulty_button
     global sound_beeep, sound_peeeeeep, sound_plop
-    # create frame
-    frame = simplegui.Frame("Pong", (WIDTH, HEIGHT), BUTTON_W)
+    # create 框
+    框= simplegui.框類("Pong, 乒乓球。", (WIDTH, HEIGHT), BUTTON_W)
     
     # register event handlers
-    frame.set_draw_handler(draw)
-    frame.set_key_down_handler(keydown)
-    frame.set_key_up_handler(keyup)
+    框.設畫處理(draw)
+    框.設鍵下處理(keydown)
+    框.設鍵上處理(keyup)
     
-    frame.add_label(" ")
-    frame.add_button("Restart",new_game, 0.9*BUTTON_W, BUTTON_FONT_H)
-    frame.add_button("Pause",pause_game, 0.9*BUTTON_W, BUTTON_FONT_H)
+    框.加標(" ")
+    框.加鈕("Restart",new_game, 0.9*BUTTON_W, BUTTON_FONT_H)
+    框.加鈕("Pause",pause_game, 0.9*BUTTON_W, BUTTON_FONT_H)
     
-    #frame.add_label(" ")
-    frame.add_label("Player 1: w up, s down")
-    frame.add_label("Player 2: up and down arrows")
+    #框.add_label(" ")
+    框.加標("Player 1: w up, s down")
+    框.加標("Player 2: up and down arrows")
     
-    #frame.add_label(" ")
-    plyr1_button = frame.add_button("Player 1: Human",plyr1_toggle, 0.9*BUTTON_W, BUTTON_FONT_H)
-    plyr2_button = frame.add_button("Player 2: Human",plyr2_toggle, 0.9*BUTTON_W, BUTTON_FONT_H)
+    #框.add_label(" ")
+    plyr1_button= 框.加鈕("Player 1: Human",plyr1_toggle, 0.9*BUTTON_W, BUTTON_FONT_H)
+    plyr2_button= 框.加鈕("Player 2: Human",plyr2_toggle, 0.9*BUTTON_W, BUTTON_FONT_H)
     
-    #frame.add_label(" ")
-    difficulty_button = frame.add_button("Computer: " + difficulty_mode,change_difficulty, 0.9*BUTTON_W, BUTTON_FONT_H)
+    #框.add_label(" ")
+    difficulty_button = 框.加鈕("Computer: " + difficulty_mode,change_difficulty, 0.9*BUTTON_W, BUTTON_FONT_H)
     
-    #frame.add_label(" ")
-    frame.add_button("Mute",mute, 0.9*BUTTON_W, BUTTON_FONT_H)
+    #框.add_label(" ")
+    框.加鈕("Mute",mute, 0.9*BUTTON_W, BUTTON_FONT_H)
     
-    sound_beeep = simplegui.Sound('https://dl.dropboxusercontent.com/u/22969407/sounds_ping_pong_8bit/ping_pong_8bit_beeep.ogg')
-    sound_peeeeeep = simplegui.Sound('https://dl.dropboxusercontent.com/u/22969407/sounds_ping_pong_8bit/ping_pong_8bit_peeeeeep.ogg')
-    sound_plop = simplegui.Sound('https://dl.dropboxusercontent.com/u/22969407/sounds_ping_pong_8bit/ping_pong_8bit_plop.ogg')
+    sound_beeep= simplegui.聲類('https://dl.dropboxusercontent.com/u/22969407/sounds_ping_pong_8bit/ping_pong_8bit_beeep.ogg')
+    sound_peeeeeep= simplegui.聲類('https://dl.dropboxusercontent.com/u/22969407/sounds_ping_pong_8bit/ping_pong_8bit_peeeeeep.ogg')
+    sound_plop= simplegui.聲類('https://dl.dropboxusercontent.com/u/22969407/sounds_ping_pong_8bit/ping_pong_8bit_plop.ogg')
     
 if __name__ == '__main__':
     setup()
     
-    # start frame
+    # start 框
     new_game()
-    frame.start()
+    框.start()
     

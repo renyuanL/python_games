@@ -24,9 +24,9 @@ FONT_DICT = {}
 
 def get_font(font_face, font_size):
     '''Gets a font object'''
-    if font_face not in FONT_FACE_DICT:
-        raise 'Not a valid font face: '
-    if (font_face,font_size) not in FONT_DICT:
+    if not FONT_FACE_DICT.has_key(font_face):
+        raise('Not a valid font face: '+font_face+'\nShould be in: ' + FONT_FACE_DICT.keys())
+    if not FONT_DICT.has_key((font_face,font_size)):
         FONT_DICT[(font_face,font_size)] = pygame.font.Font(FONT_FACE_DICT[font_face], font_size)
     return FONT_DICT[(font_face,font_size)]
     
@@ -409,7 +409,7 @@ if __name__ == '__main__':
     
     
     def print_event(name, event_info):
-        print(name, event_info)
+        print name, event_info
         
     def draw(canvas):
         canvas.draw_text('Hello', (200,200), 16, 'white', 'serif')

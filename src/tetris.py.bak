@@ -192,7 +192,7 @@ def draw(canvas):
         cnt = (cnt + 1) % DROP
         
         if cnt % 2 == 0:
-            for control,state in control_state.items():
+            for control,state in control_state.iteritems():
                 if state:
                     if control == 'left':
                         current_tetroid.move_left()
@@ -226,7 +226,7 @@ def draw(canvas):
     
 def new_tetroid():
     '''Creates a new random Tetroid'''
-    key = random.choice(list(TETROID_OFFSET_DICT.keys()))
+    key = random.choice(TETROID_OFFSET_DICT.keys())
     return Tetroid(key,[WIDTH/2,0*BLOCK_H],TETROID_OFFSET_DICT[key],TETROID_COLOR_DICT[key])
 
 def new_game():
@@ -244,13 +244,13 @@ def new_game():
 
 def key_down(key):
     '''Handles the key down events'''
-    if key in control_state:
+    if control_state.has_key(key):
         control_state[key] = True
     
 
 def key_up(key):
     '''Handles the key up events'''
-    if key in control_state:
+    if control_state.has_key(key):
         control_state[key] = False
     elif key == 'a':
         current_tetroid.rotate(-1)
