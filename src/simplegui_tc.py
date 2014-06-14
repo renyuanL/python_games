@@ -1,4 +1,6 @@
-﻿'''
+﻿#!/usr/bin/env python3
+
+'''
 
 Simplegui module has frame class that supports drawing and events.
 
@@ -350,7 +352,6 @@ class ControlPanel(Canvas):
         '''Calls the control that was clicked on by a position'''
         [control.call_handler() for control in self.controls if type(control) == Button and control.click_check(click_pos)]
 
-
 class Button(object):
     '''Creates a button.'''
 
@@ -406,7 +407,6 @@ class Label(object):
         '''Draws the label'''
         canvas.draw_text(self.text, (self.pos[0]+self.size[0]/2,self.pos[1]+self.size[1]/2), self.font_h, 'black', 'sans-serif', ('center','middle'))
 
-
 class Sound(object):
     '''Creates a sound file'''
 
@@ -421,7 +421,6 @@ class Sound(object):
 
     def stop(self):
         pass
-
 
 def print_event(name, event_info):
     print(name, event_info)

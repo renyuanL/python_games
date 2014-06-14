@@ -1,4 +1,6 @@
-﻿'''
+﻿#! /usr/bin/env python3
+
+'''
 The classic arcade game pong.
 
 Created on Jun 8, 2014
@@ -17,7 +19,7 @@ import math
 # initialize global constants
 WIDTH = 600
 HEIGHT = 400
-BUTTON_W = 200       
+BUTTON_W = 200
 BUTTON_FONT_H = 16
 SCORE_FONT_H = 40
 
@@ -44,9 +46,41 @@ mute_off = True
 
 paddles = []
 
+#
+# 中文別名
+#
+寬=        WIDTH
+高=        HEIGHT
+鈕寬=      BUTTON_W
+鈕字高=    BUTTON_FONT_H
+分數字高=  SCORE_FONT_H
+
+球徑=     BALL_RADIUS
+拍寬=     PAD_WIDTH
+拍高=     PAD_HEIGHT
+半拍寬=   HALF_PAD_WIDTH
+半拍高=   HALF_PAD_HEIGHT
+
+左=      LEFT
+右=      RIGHT
+水平=    HORIZONTAL
+垂直=    VERTICAL
+DT
+拍速=    PADDLE_VEL
+
+遊戲暫停= game_paused
+難度=     difficulty_mode
+DT_AHEAD
+電腦球拍因子= COMPUTER_PADDLE_FACTOR
+速度提升因子= SPEEDUP_FACTOR
+
+靜音結束=   mute_off
+
+球拍列=     paddles
+
 class Paddle(object):
     '''Creates a paddle'''
-    
+
     def __init__(self,name,human,pos,size,score_pos,controls=['up','down'],paddle_speed=PADDLE_VEL):
         '''Initialize the paddle'''
         self.name = name
@@ -59,17 +93,17 @@ class Paddle(object):
         self.score = 0
         self.score_pos = score_pos
         self.human = human
-    
+
     def key_press(self, key, state):
         '''Changes the control state for a key'''
         if key in self.key_controls:
             self.control_states[self.key_controls[key]] = state
-    
+
     def set_human(self,human):
         '''Sets the player to human or computer'''
         self.human = human
         self.paddle_vel = 0
-        
+
     def get_vel(self):
         '''Gets the paddle velocity'''
         if self.control_states['up']:
@@ -78,7 +112,7 @@ class Paddle(object):
             return self.paddle_speed
         else:
             return 0
-    
+
     def get_computer_move(self):
         '''Calculates the computer player's move'''
         if ball.pos[0] - self.pos[0] > 0 and ball.vel[0] < 0:
@@ -87,10 +121,10 @@ class Paddle(object):
             ball_pos_est = [WIDTH - (ball.pos[0] + DT_AHEAD*DT*ball.vel[0]), ball.pos[1] + DT_AHEAD*DT*ball.vel[1]]
         else:
             return 0
-        
+
         if ball_pos_est[0] > random.randrange(WIDTH/4,3*WIDTH/4):
             return self.paddle_vel
-        
+
         dist = ball_pos_est[1] - (self.pos[1] + HALF_PAD_HEIGHT)
         direction = 1 if dist > 0 else -1
         if math.fabs(dist) < COMPUTER_PADDLE_FACTOR * HALF_PAD_HEIGHT:
@@ -101,7 +135,7 @@ class Paddle(object):
             return direction*self.paddle_speed
         else:
             return self.paddle_vel
-        
+
     def update(self):
         '''Updates the paddle position'''
         if not game_paused:
@@ -110,28 +144,28 @@ class Paddle(object):
             else:
                 self.paddle_vel = self.get_computer_move()
             self.pos[1] += DT*self.paddle_vel
-            
+
             #keep paddle on the table
             if self.pos[1] < 0:
                 self.pos[1] = 0
             elif self.pos[1] + self.size[1] > HEIGHT:
                 self.pos[1] = HEIGHT - self.size[1]
-                
-        
+
+
     def draw(self, canvas):
         '''Draws the paddle and the score'''
         # draw paddle
         canvas.draw_rect(self.pos,self.size,1,"White","white")
         # draw score
         canvas.draw_text(str(self.score),self.score_pos,SCORE_FONT_H,"White")
-        
+
     def collide(self):
         '''
         Checks to see if ball collided with paddle
         Bounces the ball or spawn a ball and mark score
         '''
         ball_to_paddle = self.get_ball_to_paddle(ball.pos)
-        if ((self.pos[0] + 0.5*self.size[0]) - 0.5*WIDTH) * ball.vel[0] >= 0: 
+        if ((self.pos[0] + 0.5*self.size[0]) - 0.5*WIDTH) * ball.vel[0] >= 0:
             if abs(ball_to_paddle[0])<ball.radius+0.5*self.size[0]:
                 # ball is touching the gutter
                 # ball is coming at the paddle
@@ -144,44 +178,55 @@ class Paddle(object):
             elif abs(ball.pos[0] - 0.5*WIDTH) >= 0.5*WIDTH:
                 spawn_ball(self.pos[0] < 0.5*WIDTH)
                 mark_score(self)
-                
+
         #if ball.pos[0] < 0 or ball.pos[0] > WIDTH:
         #    spawn_ball(ball.pos[0] < 0.5*WIDTH)
-    
+
     def get_ball_to_paddle(self, ball_pos):
         '''Distance from the ball to the paddle in (x,y)'''
         pad_center = (self.pos[0] + 0.5*self.size[0], self.pos[1] + 0.5*self.size[1])
         ball_to_paddle = (pad_center[0] - ball_pos[0], pad_center[1] - ball_pos[1])
         return ball_to_paddle
-    
+
     def increment_score(self):
         '''Increment the score'''
         self.score += 1
-            
-            
+
+
     def __str__(self):
         '''Converts the paddle to a string'''
         return self.name + ': ' + str(self.key_controls)
-        
+
+    鍵按下=    key_press
+    設人=      set_human
+    取速度=    get_vel
+    取電腦移動= get_computer_move
+    更新= update
+    畫=   draw
+    碰=   collide
+    取球給拍= get_ball_to_paddle
+    加分= increment_score
+
+
 class Ball(object):
     '''Creates the ball'''
-    
+
     def __init__(self, pos, radius, vel):
         '''Initializes the ball'''
         self.pos = pos
         self.radius = radius
         self.vel = vel
-        
+
     def update(self):
         '''Updates the ball's position'''
         if not game_paused:
             self.pos[0] += DT * self.vel[0]
             self.pos[1] += DT * self.vel[1]
-    
+
     def draw(self, canvas):
         '''Draws the ball on the canvas'''
         canvas.draw_circle(self.pos,self.radius,1,"White","White")
-    
+
     def bounce(self,horizontal,speedup=1):
         '''Bounces the ball'''
         if horizontal:
@@ -190,7 +235,7 @@ class Ball(object):
         else:
             self.vel[0] *= speedup
             self.vel[1] *= -speedup
-    
+
     def collide_top_and_bottom(self):
         """Bounces the ball off the ceiling and floor"""
         if self.pos[1] - self.radius < 0 and self.vel[1] < 0:
@@ -201,9 +246,17 @@ class Ball(object):
             #floor
             if mute_off: sound_plop.play()
             self.bounce(VERTICAL)
-            
-            
-    
+
+    更新=    update
+    畫=      draw
+
+    彈=      bounce
+    碰頂和底= collide_top_and_bottom
+
+
+拍類= Paddle
+球類= Ball
+
 # helper functions
 # ball functions
 # initialize ball_pos and ball_vel for new bal in middle of table
@@ -213,14 +266,14 @@ def spawn_ball(direction):
     #global ball_pos, ball_vel
     global ball
     ball_pos = [WIDTH/2, HEIGHT/2]
-    
+
     vertical_vel = random.randrange(60, 180)
     horizontal_vel = random.randrange(120, 240)
     if direction:
         ball_vel = [horizontal_vel,-vertical_vel]
     else:
         ball_vel = [-horizontal_vel,-vertical_vel]
-    
+
     ball = Ball(ball_pos, BALL_RADIUS, ball_vel)
 
 def mark_score(scored_on_paddle):
@@ -249,27 +302,27 @@ def new_game():
     """ Starts a new game. Spawns a ball, resets paddles, resets score """
     global game_paused
     global paddles
-    
+
     if random.randrange(0,2) == 1:
         spawn_ball(RIGHT)
     else:
         spawn_ball(LEFT)
-    
+
     paddles = [Paddle('Player 1',(plyr1_button.get_text() == "Player 1: Human"),[0, HEIGHT/2 - HALF_PAD_HEIGHT],(PAD_WIDTH, PAD_HEIGHT),(WIDTH/4,50),['w','s']),
                Paddle('Player 2',(plyr2_button.get_text() == "Player 2: Human"),[WIDTH-PAD_WIDTH, HEIGHT/2 - HALF_PAD_HEIGHT],(PAD_WIDTH, PAD_HEIGHT),(WIDTH*3/4,50),['up','down'])]
-    
-        
+
+
     game_paused = False
 
 def draw(c):
     """ Draw the board, ball, paddles, and score. """
     global ball_pos, ball_vel
-    
+
     # draw mid line and gutters
     c.draw_line([int(WIDTH / 2), 0],[int(WIDTH / 2), HEIGHT], 1, "White")
     c.draw_line([PAD_WIDTH, 0],[PAD_WIDTH, HEIGHT], 1, "White")
     c.draw_line([WIDTH - PAD_WIDTH, 0],[WIDTH - PAD_WIDTH, HEIGHT], 1, "White")
-        
+
     # update, draw, collide the ball
     ball.update()
     ball.draw(c)
@@ -280,13 +333,12 @@ def draw(c):
         paddle.collide()
         paddle.update()
         paddle.draw(c)
-    
-        
+
 def keydown(key):
     """ Record players commands to move the paddles. """
     for paddle in paddles:
         paddle.key_press(key, True)
-   
+
 def keyup(key):
     """ Record players commands to stop the paddles. """
     for paddle in paddles:
@@ -334,40 +386,53 @@ def setup():
     '''Setup the 框 and buttons'''
     global 框, plyr1_button, plyr2_button, difficulty_button
     global sound_beeep, sound_peeeeeep, sound_plop
-    # create 框
-    框= simplegui.框類("Pong, 乒乓球。", (WIDTH, HEIGHT), BUTTON_W)
     
+    框= simplegui.框類("乒乓球。", (WIDTH, HEIGHT), BUTTON_W)
+
     # register event handlers
     框.設畫處理(draw)
     框.設鍵下處理(keydown)
     框.設鍵上處理(keyup)
-    
+
     框.加標(" ")
     框.加鈕("Restart",new_game, 0.9*BUTTON_W, BUTTON_FONT_H)
     框.加鈕("Pause",pause_game, 0.9*BUTTON_W, BUTTON_FONT_H)
-    
+
     #框.add_label(" ")
     框.加標("Player 1: w up, s down")
     框.加標("Player 2: up and down arrows")
-    
+
     #框.add_label(" ")
     plyr1_button= 框.加鈕("Player 1: Human",plyr1_toggle, 0.9*BUTTON_W, BUTTON_FONT_H)
     plyr2_button= 框.加鈕("Player 2: Human",plyr2_toggle, 0.9*BUTTON_W, BUTTON_FONT_H)
-    
+
     #框.add_label(" ")
     difficulty_button = 框.加鈕("Computer: " + difficulty_mode,change_difficulty, 0.9*BUTTON_W, BUTTON_FONT_H)
-    
+
     #框.add_label(" ")
     框.加鈕("Mute",mute, 0.9*BUTTON_W, BUTTON_FONT_H)
-    
+
     sound_beeep= simplegui.聲類('https://dl.dropboxusercontent.com/u/22969407/sounds_ping_pong_8bit/ping_pong_8bit_beeep.ogg')
     sound_peeeeeep= simplegui.聲類('https://dl.dropboxusercontent.com/u/22969407/sounds_ping_pong_8bit/ping_pong_8bit_peeeeeep.ogg')
     sound_plop= simplegui.聲類('https://dl.dropboxusercontent.com/u/22969407/sounds_ping_pong_8bit/ping_pong_8bit_plop.ogg')
-    
+
+生球=     spawn_ball
+計分=     mark_score
+設難度=   set_difficulty
+新遊戲=   new_game
+畫=       draw
+鍵下=     keydown
+鍵上=     keyup
+玩家1切換= plyr1_toggle
+玩家2切換= plyr2_toggle
+暫停遊戲=  pause_game
+改變難度=  change_difficulty
+靜音= mute
+設立= setup
+
 if __name__ == '__main__':
-    setup()
-    
-    # start 框
-    new_game()
-    框.start()
-    
+
+    設立()
+    新遊戲()
+    框.開始()
+
